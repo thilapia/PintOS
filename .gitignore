@@ -1,3 +1,6 @@
 # meson artifacts
 /.cache/
 /build/
+
+# python
+/scripts/__pycache__/
