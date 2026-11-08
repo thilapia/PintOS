@@ -43,3 +43,14 @@ disponibilizado para todos sob a licença [UNLICENSE](./UNLICENSE).
 Basicamente, isso aqui é public domain. It's free real state, baby!
 
 > Se não é Unlicense, o software é *sabor* livre.
+
+## Formatação e análise estática
+
+A configuração usa clang-format 23 ou mais recente. Após configurar o Meson,
+execute `just check-style` para verificar a formatação e rodar o
+clang-tidy usando `build/compile_commands.json`. Os comandos `just check-format`
+e `just clang-tidy` executam essas verificações separadamente. Use `just setup`
+para configurar o build cruzado, `just build` para compilar e `just test` para
+executar os testes. Para outro diretório de build,
+passe o caminho como argumento: `just check-style caminho/do/build`. Avisos do clang-tidy fazem a verificação falhar.
+Para aplicar a formatação, execute `just format`.

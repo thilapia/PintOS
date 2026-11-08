@@ -1,0 +1,12 @@
+Checks: >-
+  -*,clang-analyzer-*,bugprone-*,cert-*,performance-*,portability-*,
+  readability-*, -readability-identifier-length,
+  -readability-magic-numbers, -bugprone-easily-swappable-parameters
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*'
+CheckOptions:
+  readability-identifier-naming.FunctionCase: lower_case
+  readability-identifier-naming.VariableCase: lower_case
+  readability-identifier-naming.MacroDefinitionCase: UPPER_CASE
+  readability-identifier-naming.TypedefCase: lower_case
+  readability-identifier-naming.TypedefSuffix: _t
