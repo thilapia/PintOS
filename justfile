@@ -28,3 +28,12 @@ clang-tidy build_dir="build":
 
 # Run both style checks.
 check-style build_dir="build": (check-format) (clang-tidy build_dir)
+
+# Build the project and package the UEFI executable as a qcow2 disk.
+image build_dir="build": (build build_dir)
+    python3 scripts/mkimage.py '{{build_dir}}/bootloader/bootloader.efi' '{{build_dir}}/pintos.qcow2'
+
+# Build an image, then boot it with OVMF. Firmware variables persist in build_dir.
+run build_dir="build": (image build_dir)
+    test -f '{{build_dir}}/OVMF_VARS.fd' || cp /usr/share/edk2/x64/OVMF_VARS.4m.fd '{{build_dir}}/OVMF_VARS.fd'
+    qemu-system-x86_64 -machine q35 -m 256M -drive if=pflash,format=raw,readonly=on,file=/usr/share/edk2/x64/OVMF_CODE.4m.fd -drive if=pflash,format=raw,file='{{build_dir}}/OVMF_VARS.fd' -drive if=virtio,format=qcow2,file='{{build_dir}}/pintos.qcow2'
