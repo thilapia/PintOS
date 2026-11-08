@@ -1,7 +1,8 @@
 # UEFI applications use PE/COFF and the Microsoft x64 calling convention.
 bootloader_lib = static_library(
     'bootloader',
-    'src/main.c',
+    ['src/main.c', 'src/elf.c'],
+    include_directories: include_directories('include'),
     dependencies: libuefi_dep,
     c_args: [
         '--target=x86_64-pc-windows-msvc',

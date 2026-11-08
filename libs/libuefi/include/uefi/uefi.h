@@ -48,11 +48,23 @@ typedef struct efi_system_table {
   efi_configuration_table_t* configuration_table;
 } efi_system_table_t;
 
+// UEFI protocol identifier.
+typedef struct {
+  uint32_t data1;
+  uint16_t data2;
+  uint16_t data3;
+  uint8_t data4[8];
+} efi_guid_t;
+
 // EFI Boot Services
 typedef void(EFIAPI* efi_unused_service_t)(void);
 
 typedef efi_status_t(EFIAPI* efi_wait_for_event_t)(
   uintptr_t number_of_events, efi_event_t* events, uintptr_t* index
+);
+
+typedef efi_status_t(EFIAPI* efi_handle_protocol_t)(
+  efi_handle_t handle, efi_guid_t* protocol, void** interface
 );
 
 struct efi_boot_service {
@@ -67,6 +79,13 @@ struct efi_boot_service {
   efi_unused_service_t create_event;
   efi_unused_service_t set_timer;
   efi_wait_for_event_t wait_for_event;
+  efi_unused_service_t signal_event;
+  efi_unused_service_t close_event;
+  efi_unused_service_t check_event;
+  efi_unused_service_t install_protocol_interface;
+  efi_unused_service_t reinstall_protocol_interface;
+  efi_unused_service_t uninstall_protocol_interface;
+  efi_handle_protocol_t handle_protocol;
 };
 
 // Simple Text Output Protocol
@@ -111,3 +130,44 @@ struct efi_simple_text_input_protocol {
   efi_input_read_key_t read_key_stroke;
   efi_event_t wait_for_key;
 };
+
+// Prefix of the loaded image protocol, through DeviceHandle.
+typedef struct {
+  uint32_t revision;
+  efi_handle_t parent_handle;
+  efi_system_table_t* system_table;
+  efi_handle_t device_handle;
+} efi_loaded_image_t;
+
+typedef struct efi_file_protocol efi_file_protocol_t;
+typedef struct efi_simple_file_system efi_simple_file_system_t;
+
+typedef efi_status_t(EFIAPI* efi_open_volume_t)(
+  efi_simple_file_system_t* self, efi_file_protocol_t** root
+);
+typedef efi_status_t(EFIAPI* efi_file_open_t)(
+  efi_file_protocol_t* self,
+  efi_file_protocol_t** new_handle,
+  uint16_t* filename,
+  uint64_t mode,
+  uint64_t attributes
+);
+typedef efi_status_t(EFIAPI* efi_file_close_t)(efi_file_protocol_t* self);
+typedef efi_status_t(EFIAPI* efi_file_read_t)(
+  efi_file_protocol_t* self, uintptr_t* size, void* buffer
+);
+
+struct efi_simple_file_system {
+  uint64_t revision;
+  efi_open_volume_t open_volume;
+};
+
+struct efi_file_protocol {
+  uint64_t revision;
+  efi_file_open_t open;
+  efi_file_close_t close;
+  efi_unused_service_t delete_file;
+  efi_file_read_t read;
+};
+
+#define EFI_FILE_MODE_READ 1ULL

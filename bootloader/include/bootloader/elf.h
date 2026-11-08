@@ -1,8 +1,17 @@
 #pragma once
 
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 #define EI_NIDENT 16
+#define EI_CLASS 4
+#define EI_DATA 5
+#define EI_VERSION 6
+
+#define ELFCLASS64 2
+#define ELFDATA2LSB 1
+#define EV_CURRENT 1
 
 // Object file types and machine architectures.
 #define ET_EXEC 2
@@ -31,3 +40,6 @@ typedef struct {
 } elf64_header_t;
 
 _Static_assert(sizeof(elf64_header_t) == 64, "ELF64 header must be 64 bytes");
+
+// Validate the ELF file header; program headers are not checked yet.
+bool elf64_validate_header(const uint8_t* data, size_t size);
