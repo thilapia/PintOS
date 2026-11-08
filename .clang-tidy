@@ -1,7 +1,8 @@
 Checks: >-
   -*,clang-analyzer-*,bugprone-*,cert-*,performance-*,portability-*,
   readability-*, -readability-identifier-length,
-  -readability-magic-numbers, -bugprone-easily-swappable-parameters
+  -readability-magic-numbers, -bugprone-easily-swappable-parameters,
+  -portability-avoid-pragma-once
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
 CheckOptions:
