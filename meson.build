@@ -54,3 +54,4 @@ kernel_link_args = [
 # subdirectories
 subdir('libs')
 subdir('bootloader')
+subdir('kernel')

@@ -23,10 +23,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('efi', type=Path, help='x86-64 UEFI application')
     parser.add_argument('output', type=Path, help='qcow2 image path')
+    parser.add_argument('--kernel', required=True, type=Path, help='kernel ELF file')
     args = parser.parse_args()
 
     if not args.efi.is_file():
         parser.error(f'UEFI application not found: {args.efi}')
+
+    if not args.kernel.is_file():
+        parser.error(f'kernel not found: {args.kernel}')
+
+    if args.kernel.resolve() == args.output.resolve():
+        parser.error('kernel and output must be different files')
 
     if args.efi.resolve() == args.output.resolve():
         parser.error('input and output must be different files')
@@ -56,6 +63,7 @@ def main():
         run('mkfs.fat', '-F', '32', str(fat))
         run('mmd', '-i', str(fat), '::/EFI', '::/EFI/BOOT')
         run('mcopy', '-i', str(fat), str(args.efi), '::/EFI/BOOT/BOOTX64.EFI')
+        run('mcopy', '-i', str(fat), str(args.kernel), '::/kernel.elf')
 
         with raw.open('r+b') as disk, fat.open('rb') as partition:
             disk.seek(PARTITION_START * SECTOR_SIZE)

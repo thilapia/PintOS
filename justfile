@@ -31,7 +31,7 @@ check-style build_dir="build": (check-format) (clang-tidy build_dir)
 
 # Build the project and package the UEFI executable as a qcow2 disk.
 image build_dir="build": (build build_dir)
-    python3 scripts/mkimage.py '{{build_dir}}/bootloader/bootloader.efi' '{{build_dir}}/pintos.qcow2'
+    python3 scripts/mkimage.py '{{build_dir}}/bootloader/bootloader.efi' '{{build_dir}}/pintos.qcow2' --kernel '{{build_dir}}/kernel/kernel.elf'
 
 # Build an image, then boot it with OVMF. Firmware variables persist in build_dir.
 run build_dir="build": (image build_dir)
